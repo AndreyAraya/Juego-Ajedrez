@@ -129,5 +129,5 @@
         </div>
     </div>
 
-    @vite(['resources/js/game.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </x-app-layout>
