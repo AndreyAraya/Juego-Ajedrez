@@ -17,6 +17,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+
+            // AQUÍ ESTÁ EL RANKING: Le damos 1200 puntos por defecto a todo nuevo jugador (estilo ELO real)
+            $table->integer('ranking')->default(1200);
+
             $table->rememberToken();
             $table->timestamps();
         });
