@@ -9,35 +9,55 @@ class Game extends Model
 {
     use HasFactory;
 
-    // Campos que permitimos guardar en la BD
     protected $fillable = [
         'white_player_id',
         'black_player_id',
         'status',
-        'winner_id'
+        'winner_id',
+        'fen',
     ];
 
-    // Relación: El jugador de piezas blancas (es un Usuario)
+    const INITIAL_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+
     public function whitePlayer()
     {
         return $this->belongsTo(User::class, 'white_player_id');
     }
 
-    // Relación: El jugador de piezas negras (es un Usuario)
     public function blackPlayer()
     {
         return $this->belongsTo(User::class, 'black_player_id');
     }
 
-    // Relación: El ganador de la partida
     public function winner()
     {
         return $this->belongsTo(User::class, 'winner_id');
     }
 
-    // Relación: Una partida tiene muchos movimientos
     public function moves()
     {
-        return $this->hasMany(Move::class);
+        return $this->hasMany(Move::class)->orderBy('created_at');
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === 'pending';
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === 'in_progress';
+    }
+
+    public function colorOf(int $userId): ?string
+    {
+        if ($this->white_player_id === $userId) return 'white';
+        if ($this->black_player_id === $userId) return 'black';
+        return null;
+    }
+
+    public function currentTurn(): string
+    {
+        return ($this->moves()->count() % 2 === 0) ? 'white' : 'black';
     }
 }
