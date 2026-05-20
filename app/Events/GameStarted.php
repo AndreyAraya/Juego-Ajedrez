@@ -5,26 +5,31 @@ namespace App\Events;
 use App\Models\Game;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class GameStarted implements ShouldBroadcast
+// Implementamos ShouldBroadcastNow para que la pantalla de espera se quite al instante
+class GameStarted implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public function __construct(public Game $game) {}
+    // Variable para enviar el nombre del rival al frontend
+    public string $black_player;
 
-    public function broadcastOn(): array
+    // Usamos la promoción de propiedades de PHP 8 para declarar la partida directamente en el parámetro
+    public function __construct(public Game $game)
     {
-        return [new PrivateChannel('game.' . $this->game->id)];
+        // Extraemos el nombre del jugador de las piezas negras a través de la relación de Eloquent
+        // Si por alguna razón la relación falla o está vacía, usamos 'Oponente' como respaldo seguro
+        $this->black_player = $this->game->blackPlayer->name ?? 'Oponente';
     }
 
-    public function broadcastWith(): array
+    // Definimos el canal seguro de WebSockets por donde viajará este mensaje
+    public function broadcastOn(): PrivateChannel
     {
-        return [
-            'game_id'      => $this->game->id,
-            'black_player' => $this->game->blackPlayer->name,
-        ];
+        // Apuntamos explícitamente al canal privado de la partida en curso
+        // Solo los usuarios autorizados en channels.php podrán escuchar este evento
+        return new PrivateChannel('game.' . $this->game->id);
     }
 }

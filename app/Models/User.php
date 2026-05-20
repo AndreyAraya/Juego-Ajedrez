@@ -2,20 +2,17 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+// Importamos la clase HasMany para el tipado estricto de las relaciones
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    // Atributos que permitimos guardar masivamente en la base de datos (incluyendo el ELO/ranking)
     protected $fillable = [
         'name',
         'email',
@@ -23,45 +20,37 @@ class User extends Authenticatable
         'ranking',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
+    // Atributos que se ocultan por seguridad cuando el usuario se envía como respuesta JSON o Array
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+    // Le indica a Laravel cómo transformar ciertos datos al leerlos o guardarlos
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password' => 'hashed', // Hashea la contraseña automáticamente al guardar
         ];
     }
 
     // --- RELACIONES PARA EL AJEDREZ ---
 
-    // Partidas donde jugó con blancas
-    public function gamesAsWhite()
+    // Relación: Un usuario puede crear/jugar muchas partidas utilizando las piezas blancas
+    public function gamesAsWhite(): HasMany
     {
         return $this->hasMany(Game::class, 'white_player_id');
     }
 
-    // Partidas donde jugó con negras
-    public function gamesAsBlack()
+    // Relación: Un usuario puede unirse/jugar muchas partidas utilizando las piezas negras
+    public function gamesAsBlack(): HasMany
     {
         return $this->hasMany(Game::class, 'black_player_id');
     }
 
-    // Todos sus movimientos en cualquier partida
-    public function moves()
+    // Relación: Un usuario puede tener un registro de todos los movimientos que ha hecho históricamente
+    public function moves(): HasMany
     {
         return $this->hasMany(Move::class, 'player_id');
     }

@@ -6,23 +6,26 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    // Ejecuta la migración para agregar el sistema de ELO a usuarios existentes
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->integer('ranking')->default(1000);
-        });
+        // Medida de seguridad: Validamos que la columna no exista para evitar que la base de datos colapse
+        if (!Schema::hasColumn('users', 'ranking')) {
+            Schema::table('users', function (Blueprint $table) {
+                // Usamos 1200 puntos por defecto para mantener la consistencia con el ELO oficial
+                $table->integer('ranking')->default(1200);
+            });
+        }
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    // Revierte la migración si hacemos un rollback
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('ranking');
-        });
+        // Medida de seguridad: Solo intentamos borrarla si la columna realmente existe
+        if (Schema::hasColumn('users', 'ranking')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('ranking');
+            });
+        }
     }
 };

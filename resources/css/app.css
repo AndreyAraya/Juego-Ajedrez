@@ -1,3 +1,70 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Estructura del Tablero */
+.chess-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    width: min(80vw, 520px);
+    height: min(80vw, 520px);
+    border: 4px solid #374151;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.chess-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+}
+
+/* Colores de las celdas */
+.chess-cell.light {
+    background: #f0d9b5;
+}
+.chess-cell.dark {
+    background: #b58863;
+}
+
+/* Efectos visuales de selección y movimiento */
+.chess-cell.selected {
+    background: #f6f669 !important;
+}
+.chess-cell.highlight {
+    background: rgba(20, 85, 30, 0.35) !important;
+}
+.chess-cell.capture {
+    background: rgba(20, 85, 30, 0.6) !important;
+}
+.chess-cell.in-check {
+    background: #e74c3c !important;
+}
+
+/* Fuente de Piezas */
+.piece-icon {
+    font-family: "ChessIcons" !important;
+    font-size: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    user-select: none;
+}
+
+/* Colores puros y sombras para contraste */
+.black-piece {
+    color: #000000 !important;
+    text-shadow: 0 0 1px #ffffff; /* Borde blanco fino para piezas negras */
+}
+
+.white-piece {
+    color: #ffffff !important;
+    text-shadow:
+        0 0 1px #000000,
+        0 1px 2px rgba(0, 0, 0, 0.8); /* Borde negro fino para piezas blancas */
+}

@@ -6,31 +6,33 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    // Ejecuta la migración para crear la tabla de partidas en la base de datos
     public function up(): void
     {
         Schema::create('games', function (Blueprint $table) {
             $table->id();
 
-            // Jugadores (Relacionados con la tabla usuarios)
+            // Relación con el jugador que controla las piezas blancas (siempre obligatorio al crear)
             $table->foreignId('white_player_id')->constrained('users');
+
+            // Relación con el jugador que controla las negras (permite nulos porque se unen después)
             $table->foreignId('black_player_id')->nullable()->constrained('users');
 
-            // Estado del juego
+            // Estado actual de la partida para controlar el flujo en el lobby
             $table->enum('status', ['pending', 'in_progress', 'finished', 'draw'])->default('pending');
 
-            // Ganador (nulo si es empate o no ha terminado)
+            // Posición exacta del tablero. Aumentamos a 255 para coincidir con el GameController y evitar cortes
+            $table->string('fen', 255);
+
+            // Relación con el jugador que ganó la partida (nulo si es empate o sigue en progreso)
             $table->foreignId('winner_id')->nullable()->constrained('users');
 
-            $table->timestamps(); // Guarda cuándo empezó y terminó la partida
+            // Crea automáticamente las columnas 'created_at' y 'updated_at'
+            $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    // Revierte la migración eliminando la tabla si ejecutamos 'php artisan migrate:rollback'
     public function down(): void
     {
         Schema::dropIfExists('games');
