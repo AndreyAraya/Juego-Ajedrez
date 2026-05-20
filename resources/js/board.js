@@ -1,7 +1,7 @@
 import {
     fenToBoard, boardToFen, squareToIndex, indexToSquare,
     legalMoves, getGameStatus, isInCheck
-} from './rules.js';
+} from './chess/rules.js';
 
 const PIECES = {
     K: '♔', Q: '♕', R: '♖', B: '♗', N: '♘', P: '♙',
