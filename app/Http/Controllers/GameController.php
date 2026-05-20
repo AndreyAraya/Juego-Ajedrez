@@ -23,7 +23,7 @@ class GameController extends Controller
         $myActiveGame = Game::where('status', 'in_progress')
             ->where(function ($q) {
                 $q->where('white_player_id', Auth::id())
-                  ->orWhere('black_player_id', Auth::id());
+                    ->orWhere('black_player_id', Auth::id());
             })
             ->first();
 
@@ -33,7 +33,7 @@ class GameController extends Controller
             ->where('status', 'finished')
             ->where(function ($q) {
                 $q->where('white_player_id', Auth::id())
-                  ->orWhere('black_player_id', Auth::id());
+                    ->orWhere('black_player_id', Auth::id());
             })
             ->latest()
             ->take(5)
@@ -48,7 +48,7 @@ class GameController extends Controller
         $existing = Game::where('status', 'in_progress')
             ->where(function ($q) {
                 $q->where('white_player_id', Auth::id())
-                  ->orWhere('black_player_id', Auth::id());
+                    ->orWhere('black_player_id', Auth::id());
             })->first();
 
         if ($existing) {
@@ -151,13 +151,29 @@ class GameController extends Controller
         $games = Game::with(['whitePlayer', 'blackPlayer', 'winner'])
             ->where(function ($q) {
                 $q->where('white_player_id', Auth::id())
-                  ->orWhere('black_player_id', Auth::id());
+                    ->orWhere('black_player_id', Auth::id());
             })
             ->whereIn('status', ['finished', 'draw'])
             ->latest()
             ->paginate(10);
 
         return view('chess.history', compact('games'));
+    }
+
+    // Eliminar una partida
+    public function destroy(Game $game)
+    {
+        $userId = Auth::id();
+
+        // Seguridad: Verificar que el usuario sea uno de los jugadores de esta partida
+        if ($game->white_player_id !== $userId && $game->black_player_id !== $userId) {
+            return back()->with('error', 'No tienes permiso para eliminar esta partida.');
+        }
+
+        // Eliminar la partida
+        $game->delete();
+
+        return redirect()->route('chess.lobby')->with('success', 'Partida eliminada correctamente.');
     }
 
     // Ranking ELO simple
