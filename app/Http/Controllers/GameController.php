@@ -182,4 +182,18 @@ class GameController extends Controller
         \App\Models\User::where('id', $winnerId)->increment('ranking', 20);
         \App\Models\User::where('id', $loserId)->decrement('ranking', 20);
     }
+public function abandon(Game $game)
+{
+    $userId = Auth::id();
+    if ($game->white_player_id !== $userId && $game->black_player_id !== $userId) {
+        return redirect()->route('chess.lobby');
+    }
+    $winnerId = $game->white_player_id === $userId ? $game->black_player_id : $game->white_player_id;
+    $game->update([
+        'status'    => 'finished',
+        'winner_id' => $winnerId,
+    ]);
+    return redirect()->route('chess.lobby');
+}
+
 }
