@@ -20,16 +20,14 @@ Route::middleware('auth')->group(function () {
 
 // ── Rutas de Ajedrez ──────────────────────────────────────────────────────────
 Route::middleware(['auth', 'verified'])->prefix('chess')->name('chess.')->group(function () {
-    Route::get('/',               [GameController::class, 'index'])->name('lobby');
-    Route::post('/create',        [GameController::class, 'store'])->name('create');
-    Route::post('/join/{game}',   [GameController::class, 'join'])->name('join');
-    Route::get('/game/{game}',    [GameController::class, 'show'])->name('game');
-    Route::post('/move/{game}',   [GameController::class, 'move'])->name('move');
-    Route::get('/history',        [GameController::class, 'history'])->name('history');
-
-    // Nueva ruta para eliminar la partida
-    Route::delete('/game/{game}', [GameController::class, 'destroy'])->name('game.destroy');
+    Route::get('/',                [GameController::class, 'index'])->name('lobby');
+    Route::post('/create',         [GameController::class, 'store'])->name('create');
+    Route::post('/join/{game}',    [GameController::class, 'join'])->name('join');
+    Route::get('/game/{game}',     [GameController::class, 'show'])->name('game');
+    Route::post('/move/{game}',    [GameController::class, 'move'])->name('move');
+    Route::post('/abandon/{game}', [GameController::class, 'abandon'])->name('abandon');
+    Route::get('/history',         [GameController::class, 'history'])->name('history');
 });
 // ─────────────────────────────────────────────────────────────────────────────
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
