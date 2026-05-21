@@ -17,8 +17,8 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
 
-            // Sistema de ELO: Asignamos 1200 puntos por defecto a cada nuevo jugador
-            $table->integer('ranking')->default(1200);
+            // Sistema de ELO: Asignamos 0 puntos por defecto a cada nuevo jugador
+            $table->integer('ranking')->default(0);
 
             $table->rememberToken();
             $table->timestamps(); // Crea automáticamente 'created_at' y 'updated_at'
