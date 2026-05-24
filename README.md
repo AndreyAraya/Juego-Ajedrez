@@ -32,6 +32,6 @@ Although the game is partially functional, the primary objective of the project 
 - Dynamic frontend updates
 - Networking and external server exposure
 
-## Author
+## Authors
 - Carlos Andrey Araya Quirós
 - Dorian Álvarez López
