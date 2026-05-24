@@ -33,5 +33,5 @@ Although the game is partially functional, the primary objective of the project 
 - Networking and external server exposure
 
 ## Author
-Carlos Andrey Araya Quirós
-Dorian Álvarez López
+- Carlos Andrey Araya Quirós
+- Dorian Álvarez López
